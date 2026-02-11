@@ -1,0 +1,24 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    environment:
+      - ODDS_DB_PATH=${ODDS_DB_PATH:-/app/data/demo_odds.db}
+      - ODDS_ENABLE_INDEXES=${ODDS_ENABLE_INDEXES:-1}
+      - ODDS_BOOK_ONLINE_WITHIN_MINUTES=${ODDS_BOOK_ONLINE_WITHIN_MINUTES:-90}
+      - ODDS_EXCLUDED_BOOKS=${ODDS_EXCLUDED_BOOKS:-}
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "${API_PORT:-8000}:8000"
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "${WEB_PORT:-3000}:80"
+
